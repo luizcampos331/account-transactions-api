@@ -4,6 +4,7 @@ import path from 'path';
 
 export interface IEventRepository {
   create(data: IEventDTO): Promise<void>;
+  reset(): Promise<void>;
 }
 
 export class JsonEventRepository implements IEventRepository {
@@ -41,5 +42,10 @@ export class JsonEventRepository implements IEventRepository {
     events.push(data);
 
     await fs.writeFile(this.filePath, JSON.stringify(events, null, 2), 'utf-8');
+  }
+
+  public async reset(): Promise<void> {
+    await this.ensureDatabaseExists();
+    await fs.writeFile(this.filePath, JSON.stringify([], null, 2), 'utf-8');
   }
 }

@@ -6,6 +6,7 @@ export interface IAccountRepository {
   findById(id: string): Promise<IAccountDTO | null>;
   create(data: IAccountDTO): Promise<void>;
   update(data: IAccountDTO): Promise<void>;
+  reset(): Promise<void>;
 }
 
 export class JsonAccountRepository implements IAccountRepository {
@@ -64,5 +65,10 @@ export class JsonAccountRepository implements IAccountRepository {
       JSON.stringify(accounts, null, 2),
       'utf-8',
     );
+  }
+
+  public async reset(): Promise<void> {
+    await this.ensureDatabaseExists();
+    await fs.writeFile(this.filePath, JSON.stringify([], null, 2), 'utf-8');
   }
 }
