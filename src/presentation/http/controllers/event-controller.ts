@@ -29,7 +29,7 @@ class EventController {
 
     const data = await getEventUseCase.execute(body);
 
-    return response.send(data);
+    return response.status(201).send(data);
   }
 }
 
