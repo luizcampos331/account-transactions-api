@@ -3,7 +3,9 @@ import path from 'path';
 import { IAccountDTO } from '@/entities/i-account-dto';
 
 export interface IAccountRepository {
-  findById(id: number): Promise<IAccountDTO | null>;
+  findById(id: string): Promise<IAccountDTO | null>;
+  create(data: IAccountDTO): Promise<void>;
+  update(data: IAccountDTO): Promise<void>;
 }
 
 export class JsonAccountRepository implements IAccountRepository {
@@ -36,8 +38,31 @@ export class JsonAccountRepository implements IAccountRepository {
     return JSON.parse(data);
   }
 
-  public async findById(id: number): Promise<IAccountDTO | null> {
+  public async findById(id: string): Promise<IAccountDTO | null> {
     const accounts = await this.readData();
     return accounts.find(account => account.id === id) || null;
+  }
+
+  public async create(data: IAccountDTO): Promise<void> {
+    const accounts = await this.readData();
+    accounts.push(data);
+
+    await fs.writeFile(
+      this.filePath,
+      JSON.stringify(accounts, null, 2),
+      'utf-8',
+    );
+  }
+
+  public async update(data: IAccountDTO): Promise<void> {
+    const accounts = await this.readData();
+    const index = accounts.findIndex(account => account.id === data.id);
+    accounts[index] = data;
+
+    await fs.writeFile(
+      this.filePath,
+      JSON.stringify(accounts, null, 2),
+      'utf-8',
+    );
   }
 }

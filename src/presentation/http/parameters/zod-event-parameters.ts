@@ -1,11 +1,13 @@
-import { GetBalanceInput } from '@/application/use-cases/get-balance-use-case';
 import { z } from 'zod';
+import { ManageEventsInput } from '@/application/use-cases/manage-events-use-case';
 import { ParameterError } from './errors/parameter-error';
 
-class ZodBalanceParameters {
-  public get(query: any): GetBalanceInput {
+class ZodEventParameters {
+  public manage(query: any): ManageEventsInput {
     const dataSchema = z.object({
-      account_id: z.string(),
+      type: z.enum(['deposit']),
+      destination: z.string(),
+      amount: z.number(),
     });
 
     const _query = dataSchema.safeParse(query);
@@ -18,4 +20,4 @@ class ZodBalanceParameters {
   }
 }
 
-export default ZodBalanceParameters;
+export default ZodEventParameters;

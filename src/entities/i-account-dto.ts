@@ -1,4 +1,4 @@
 export interface IAccountDTO {
-  id: number;
+  id: string;
   balance: number;
 }

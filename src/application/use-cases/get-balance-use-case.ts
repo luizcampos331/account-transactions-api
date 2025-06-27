@@ -2,7 +2,7 @@ import { IAccountRepository } from '@/infra/repositories/account-repository';
 import { ApplicationError } from '../errors/application-error';
 
 export type GetBalanceInput = {
-  account_id: number;
+  account_id: string;
 };
 
 class GetBalanceUseCase {
