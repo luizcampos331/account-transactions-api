@@ -7,9 +7,7 @@
     "dev": "ts-node-dev --poll -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules --respawn src/main.ts",
     "start": "node ./build/infra/http/index.js",
     "build": "tsup src --out-dir build",
-    "lint": "tsc --skipLibCheck --noEmit && eslint --ext .ts src/",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "lint": "tsc --skipLibCheck --noEmit && eslint --ext .ts src/"
   },
   "repository": {
     "type": "git",
