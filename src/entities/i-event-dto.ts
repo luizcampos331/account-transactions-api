@@ -1,5 +1,5 @@
 export interface IEventDTO {
   account_id: string;
-  type: 'deposit';
+  type: 'deposit' | 'withdraw';
   amount: number;
 }

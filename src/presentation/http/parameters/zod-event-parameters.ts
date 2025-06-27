@@ -5,8 +5,9 @@ import { ParameterError } from './errors/parameter-error';
 class ZodEventParameters {
   public manage(query: any): ManageEventsInput {
     const dataSchema = z.object({
-      type: z.enum(['deposit']),
-      destination: z.string(),
+      type: z.enum(['deposit', 'withdraw']),
+      destination: z.optional(z.string()),
+      origin: z.optional(z.string()),
       amount: z.number(),
     });
 
@@ -16,7 +17,7 @@ class ZodEventParameters {
       throw new ParameterError(_query.error.format());
     }
 
-    return _query.data;
+    return _query.data as ManageEventsInput;
   }
 }
 

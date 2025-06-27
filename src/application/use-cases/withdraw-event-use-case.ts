@@ -1,50 +1,47 @@
 import { IAccountRepository } from '@/infra/repositories/account-repository';
 import { IEventRepository } from '@/infra/repositories/event-repository';
+import { ApplicationError } from '../errors/application-error';
 
-export type DepositEventInput = {
-  destination: string;
+export type WithdrawEventInput = {
+  origin: string;
   amount: number;
 };
 
-type DepositEventOutput = {
+type WithdrawEventOutput = {
   id: string;
   balance: number;
 };
 
-class DepositEventUseCase {
+class WithdrawEventUseCase {
   constructor(
     private readonly accountRepository: IAccountRepository,
     private readonly eventRepository: IEventRepository,
   ) {}
 
   public async execute({
-    destination,
+    origin,
     amount,
-  }: DepositEventInput): Promise<DepositEventOutput> {
-    let account = await this.accountRepository.findById(destination);
+  }: WithdrawEventInput): Promise<WithdrawEventOutput> {
+    const account = await this.accountRepository.findById(origin);
 
     if (!account) {
-      account = {
-        id: destination,
-        balance: amount,
-      };
-      await this.accountRepository.create(account);
-    } else {
-      account.balance += amount;
-      await this.accountRepository.update(account);
+      throw new ApplicationError(0, 404);
     }
+
+    account.balance -= amount;
+    await this.accountRepository.update(account);
 
     await this.eventRepository.create({
       account_id: account.id,
-      type: 'deposit',
+      type: 'withdraw',
       amount,
     });
 
     return {
-      id: destination,
+      id: origin,
       balance: account.balance,
     };
   }
 }
 
-export default DepositEventUseCase;
+export default WithdrawEventUseCase;

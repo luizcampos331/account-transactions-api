@@ -3,6 +3,7 @@ import AccountFactory from '@/infra/factories/account-factory';
 import ManageEventsUseCase from '@/application/use-cases/manage-events-use-case';
 import DepositEventUseCase from '@/application/use-cases/deposit-event-use-case';
 import EventFactory from '@/infra/factories/event-factory';
+import WithdrawEventUseCase from '@/application/use-cases/withdraw-event-use-case';
 import ZodEventParameters from '../parameters/zod-event-parameters';
 
 class EventController {
@@ -16,10 +17,15 @@ class EventController {
       accountRepository,
       eventRepository,
     );
+    const withdrawEventUseCase = new WithdrawEventUseCase(
+      accountRepository,
+      eventRepository,
+    );
 
     const getEventUseCase = new ManageEventsUseCase(
       accountRepository,
       depositEventUseCase,
+      withdrawEventUseCase,
     );
 
     const data = await getEventUseCase.execute(body);
