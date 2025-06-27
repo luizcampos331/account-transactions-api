@@ -1,10 +1,9 @@
-import { IAccountRepository } from '@/infra/repositories/account-repository';
 import { ApplicationError } from '../errors/application-error';
 import DepositEventUseCase from './deposit-event-use-case';
 import WithdrawEventUseCase from './withdraw-event-use-case';
 
 export type ManageEventsInput = {
-  type: 'deposit' | 'withdraw';
+  type: 'deposit' | 'withdraw' | 'transfer';
   destination: string;
   origin: string;
   amount: number;
@@ -23,7 +22,6 @@ type ManageEventsOutput = {
 
 class ManageEventsUseCase {
   constructor(
-    private readonly accountRepository: IAccountRepository,
     private readonly depositEventUseCase: DepositEventUseCase,
     private readonly withdrawEventUseCase: WithdrawEventUseCase,
   ) {}
@@ -51,6 +49,20 @@ class ManageEventsUseCase {
         });
 
         return { origin: originResult };
+      }
+
+      case 'transfer': {
+        const originResult = await this.withdrawEventUseCase.execute({
+          origin,
+          amount,
+        });
+
+        const destinationResult = await this.depositEventUseCase.execute({
+          destination,
+          amount,
+        });
+
+        return { origin: originResult, destination: destinationResult };
       }
       default:
         throw new ApplicationError('Invalid type');

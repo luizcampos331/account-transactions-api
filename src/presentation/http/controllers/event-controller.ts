@@ -23,7 +23,6 @@ class EventController {
     );
 
     const getEventUseCase = new ManageEventsUseCase(
-      accountRepository,
       depositEventUseCase,
       withdrawEventUseCase,
     );
